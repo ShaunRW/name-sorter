@@ -2,7 +2,7 @@ using System;
 
 namespace name_sorter
 {
-    class SortableName
+    public class SortableName
     {
 
         // This stores the name in its original format - given names + last name
@@ -16,7 +16,7 @@ namespace name_sorter
         {
             if ( name.Length > 0 )
             {
-                this.originalString = name;
+                this.originalString = name.TrimEnd();
                 this.CreateSortString();
             }
             else
@@ -27,7 +27,7 @@ namespace name_sorter
 
         // Since we want to sort the names by last name then by given names, this method will rearange the string
         // so that the last name comes before the given names.
-        private void CreateSortString( )
+        private void CreateSortString()
         {
             int lastDelim = this.originalString.LastIndexOf( ' ' );
             this.sortString = this.originalString.Substring( lastDelim + 1 ) + ' ' + this.originalString.Substring( 0, lastDelim );
