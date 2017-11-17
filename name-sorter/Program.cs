@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace name_sorter
 {
@@ -7,26 +8,39 @@ namespace name_sorter
         static void Main(string[] args)
         {
             
-            // initialize the sorter and file classs.
-            Sorter nameSorter = new Sorter();
-            File file = new File();
+            // Define Input & Output objects
+            FileReader InputFile = new FileReader();
+            FileWriter OutputFile = new FileWriter("sorted-names-list.txt");
+            ScreenPrinter screen = new ScreenPrinter();
+
+            // Define PersonName Objects and List.
+            NameSorter nameSorter = new NameSorter();
+            PersonNameConverter personNameConverter = new PersonNameConverter();
+            List<PersonName> personNameList = new List<PersonName>();
 
             // only execute the program if an input file was specified.
-            if ( args.Length > 0 ){
+            if ( args.Length > 0 )
+            {
+                // load the list of raw unsorted names to a string array.
+                string[] rawNames = InputFile.LoadStringArray( args[0] );
 
-                // loads all the names into a string array, then added it to the name sorter and sorts them.
-                // the load function makes sure the specfied input file exists.
-                nameSorter.AddNameList( file.Load( args[0] ) );
+                // convert the string array to a list of PersonNames
+                personNameList = personNameConverter.StringArrayToPersonNameList( rawNames );
+    
+                // Perform the sort operation.
+                personNameList = nameSorter.SortByLastNameThenFirstName( personNameList );
                 
-                // Sort the list of names and print them to the screen.
-                nameSorter.SortNames();
-                nameSorter.PrintNames();
+                // convert the PersonName list back to a raw string array
+                rawNames = personNameConverter.PersonNameListToStringArray( personNameList );
 
-                // the sorted name list can be saved to file and printed to the screen.
-                file.Save( "sorted-names-list.txt", nameSorter.GetNameList() );
+                // print the list of names to the screen
+                screen.PrintArray( rawNames );
+
+                // the sorted name list can now be saved to file
+                OutputFile.PrintArray( rawNames );
 
             } else {
-                Console.WriteLine( "Please specify a file to sort." );
+                screen.Print( "Please specify a file to sort." );
             }
 
         }
